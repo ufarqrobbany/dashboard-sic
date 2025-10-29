@@ -22,11 +22,11 @@ Sistem ini terdiri dari dua bagian utama:
 
 ## 3\. Arsitektur Sistem
 
-1.  **Perangkat IoT (Asumsi):** Sebuah perangkat (mis. ESP32/Raspberry Pi) membaca sensor DHT, memformatnya sebagai JSON (mis. `{"temperature": 25.0, "humidity": 70.0}`), dan mengirimkannya ke `DHT_TOPIC` di broker MQTT.
+1.  **Perangkat IoT:** Sebuah perangkat ESP32 membaca sensor DHT, memformatnya sebagai JSON (`{"temperature": 25.0, "humidity": 70.0}`), dan mengirimkannya ke `DHT_TOPIC` di broker MQTT.
 2.  **Broker MQTT (HiveMQ):** Bertindak sebagai perantara pesan.
 3.  **Backend (Python):**
       * Mendengarkan `DHT_TOPIC`.
-      * Saat data diterima, `mqtt_handler.py` menyimpannya menggunakan `storage.py` ke `data.csv`.
+      * Saat data diterima, `mqtt_handler.py` memanggil `storage.py`. **Timestamp ditambahkan oleh backend (server-side)** saat data diterima, lalu disimpan ke `data.csv`. [cite: `dashboard-sic/backend/storage.py`]
       * Jika data melebihi ambang batas, `mqtt_handler.py` memanggil `telegram_notifier.py` dan menerbitkan pesan ke `BUZZER_TOPIC`.
       * `main.py` menjalankan server API untuk melayani permintaan data.
 4.  **Frontend (Browser):**
@@ -42,7 +42,7 @@ Sistem ini terdiri dari dua bagian utama:
 1.  **Navigasi ke Direktori:**
 
     ```bash
-    cd dashboard-sic/backend
+    cd lens-guard-dashboard/backend
     ```
 
 2.  **Buat Virtual Environment (Direkomendasikan):**
@@ -87,7 +87,7 @@ Sistem ini terdiri dari dua bagian utama:
     # TOPIK HARUS DIISI
     # Pastikan topik ini SAMA dengan yang digunakan perangkat IoT Anda
     DHT_TOPIC = "sic/dibimbing/FuntasticFour/Reqi/pub/dht" # Contoh, sesuaikan!
-    BUZZER_TOPIC = "sic/dibimbing/FuntasticFour/Reqi/cmd/led" # Contoh, sesuaikan!
+    BUZZER_TOPIC = "sic/dibimbing/FuntasticFour/Reqi/cmd/buzzer" # Contoh, sesuaikan!
     ```
 
 ### B. Frontend (Web Dashboard)
@@ -108,7 +108,7 @@ Sistem ini terdiri dari dua bagian utama:
 
 ## 5\. Menjalankan Proyek
 
-1.  **Jalankan Backend:**
+1.  **Jalankan Backend (Terminal 1):**
     Pastikan Anda berada di direktori `backend/` dan virtual environment (venv) Anda aktif. Jalankan server FastAPI menggunakan Uvicorn:
 
     ```bash
@@ -119,15 +119,22 @@ Sistem ini terdiri dari dua bagian utama:
       * Listener MQTT akan otomatis dimulai di latar belakang (didefinisikan di `main.py` @ `startup_event`).
       * Anda akan melihat log "Memulai thread MQTT..." di terminal Anda.
 
-2.  **Jalankan Frontend:**
-    Tidak perlu server web khusus. Cukup **buka file `frontend/index.html`** langsung di browser Anda (mis. klik dua kali file tersebut).
+2.  **Jalankan Frontend (Terminal 2):**
+    Buka terminal baru, pindah ke direktori frontend/, dan jalankan perintah berikut (kami menggunakan port 8001 agar tidak bentrok dengan backend):
 
-3.  **Mulai Publikasi Data:**
+    ```bash
+    cd frontend
+    python -m http.server 8001
+    ```
+    
+      * Server frontend akan berjalan di http://localhost:8001.
+
+4.  **Mulai Publikasi Data:**
     Nyalakan perangkat IoT Anda (atau gunakan simulator MQTT) untuk mulai mengirim data sensor ke `DHT_TOPIC` yang telah dikonfigurasi.
 
-4.  **Verifikasi:**
+5.  **Verifikasi:**
 
-      * Buka `frontend/index.html` di browser. Anda akan melihat metrik dan grafik diperbarui secara real-time.
+      * Buka http://localhost:8001 di browser Anda. Anda akan melihat metrik dan grafik diperbarui secara real-time.
       * Periksa terminal backend, Anda akan melihat log data yang diterima (mis. `[2025-10-28 12:46:07] Data diterima: T=25.3°C | H=77.7%`).
       * Buka `http://127.0.0.1:8000/docs` untuk melihat dokumentasi API (Swagger UI).
   
