@@ -1,8 +1,8 @@
-# 📸 Camera Storage Monitor Dashboard
+# 📸 Lens Guard Dashboard
 
 ## 1\. Deskripsi Proyek
 
-**Camera Storage Monitor Dashboard** adalah dashboard untuk sistem pemantauan suhu (`Temperature`) dan kelembaban (`Humidity`) secara real-time. Proyek ini dirancang untuk memantau kondisi lingkungan, seperti tempat penyimpanan kamera, untuk mencegah kerusakan akibat kelembaban yang tidak ideal.
+**Lens Guard Dashboard** adalah dashboard untuk sistem pemantauan suhu (`Temperature`) dan kelembaban (`Humidity`) secara real-time. Proyek ini dirancang untuk memantau kondisi lingkungan, seperti tempat penyimpanan kamera, untuk mencegah kerusakan akibat kelembaban yang tidak ideal.
 
 Sistem ini terdiri dari dua bagian utama:
 
