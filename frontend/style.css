@@ -1,0 +1,57 @@
+body {
+  font-family: sans-serif;
+  background: #f9fafb;
+  margin: 0;
+}
+
+header {
+  background: #1e3a8a;
+  color: white;
+  padding: 16px 20px;
+}
+
+.wrap {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+.cards {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.card {
+  flex: 1;
+  min-width: 250px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.1);
+  padding: 16px;
+}
+
+.metric {
+  font-size: 36px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+/* Status Kelembapan (OK, Peringatan, Bahaya) */
+.status {
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 8px;
+  font-weight: 600;
+}
+.ok { background: #d1fae5; color: #065f46; }
+.warn { background: #fef3c7; color: #92400e; }
+.danger { background: #fee2e2; color: #991b1b; }
+
+/* Styling untuk Chart Canvas */
+#chart {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 3px 8px rgba(0,0,0,.1);
+}

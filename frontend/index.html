@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <title>📸 Camera Storage Monitor</title>
+  
+  <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <h2>📸 Camera Storage Monitor</h2>
+</header>
+
+<div class="wrap">
+  <div class="cards">
+    <div class="card">
+      <div>🌡️ Suhu (°C)</div>
+      <div id="temp" class="metric">--</div>
+    </div>
+    <div class="card">
+      <div>💧 Kelembapan (%)</div>
+      <div id="hum" class="metric">--</div>
+      <div id="status" class="status ok">Menunggu data…</div>
+    </div>
+  </div>
+  
+  <canvas id="chart" height="220"></canvas>
+</div>
+
+<script src="app.js" defer></script>
+
+</body>
+</html>

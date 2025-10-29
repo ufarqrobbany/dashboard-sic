@@ -1,0 +1,27 @@
+# 1. File Hasil Kompilasi Python & Cache
+__pycache__/
+*.pyc
+*.pyd
+*.pyo
+*.pyl
+.mypy_cache/
+.pytest_cache/
+
+# 2. Virtual Environment
+venv/
+env/
+.venv/
+
+# 3. Log dan File Sementara
+*.log
+*.tmp
+temp/
+
+# 4. File Sistem Operasi dan IDE
+.DS_Store # macOS
+Thumbs.db # Windows
+.vscode/
+.idea/
+
+# 5. File Data
+backend/data.csv
