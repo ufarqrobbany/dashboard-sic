@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
   <meta charset="utf-8" />
-  <title>📸 Camera Storage Monitor</title>
+  <title>Lens Guard Monitoring Dashboard</title>
   
   <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,10 +12,12 @@
 <body>
 
 <header>
-  <h2>Lens Guard Monitoring</h2>
+  <h2>Lens Guard Monitoring Dashboard</h2>
 </header>
 
 <div class="wrap">
+  <div id="status" class="status ok">Menunggu data…</div>
+
   <div class="cards">
     <div class="card">
       <div>🌡️ Suhu (°C)</div>
@@ -24,20 +26,22 @@
     <div class="card">
       <div>💧 Kelembapan (%)</div>
       <div id="hum" class="metric">--</div>
-      <div id="status" class="status ok">Menunggu data…</div>
+      <div id="status-hum" class="status-hum ok">Menunggu data…</div>
     </div>
   </div>
   
-  <div class="chart-container">
-    <h3>Grafik Suhu (3 Hari Terakhir)</h3>
-    <canvas id="tempChart" class="chart-canvas" height="220"></canvas>
+  <div class="charts-wrapper">
+    <div class="chart-container">
+      <h3>Grafik Suhu</h3>
+      <canvas id="tempChart" class="chart-canvas" height="220"></canvas>
+    </div>
+    
+    <div class="chart-container">
+      <h3>Grafik Kelembapan</h3>
+      <canvas id="humChart" class="chart-canvas" height="220"></canvas>
+    </div>
   </div>
-  
-  <div class="chart-container">
-    <h3>Grafik Kelembapan (3 Hari Terakhir)</h3>
-    <canvas id="humChart" class="chart-canvas" height="220"></canvas>
   </div>
-</div>
 
 <script src="app.js" defer></script>
 

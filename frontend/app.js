@@ -8,28 +8,33 @@ const options = {
 };
 const topic = "sic/dibimbing/FuntasticFour/Reqi/pub/dht";
 
-// URL API Backend (yang berjalan di port 8000)
-const apiUrl = "http://127.0.0.1:8000/api/history";
-
 // --- 2. Inisialisasi Elemen DOM ---
 const tempEl = document.getElementById("temp");
 const humEl = document.getElementById("hum");
-const statusEl = document.getElementById("status");
+const statusEl = document.getElementById("status"); // Status Umum
+const statusHumEl = document.getElementById("status-hum"); // Status Kelembapan
 
 /**
  * Memperbarui tampilan status berdasarkan nilai kelembapan.
  * @param {number} h - Nilai kelembapan.
  */
 function setStatus(h) {
-  if (h < 55) {
-    statusEl.className = "status ok";
-    statusEl.textContent = "✅ Aman";
-  } else if (h < 65) {
-    statusEl.className = "status warn";
-    statusEl.textContent = "⚠️ Waspada";
-  } else {
-    statusEl.className = "status danger";
-    statusEl.textContent = "🚨 Bahaya!";
+  let statusClass = "ok";
+  let statusText = "✅ Aman";
+
+  if (h >= 60) {
+    statusClass = "danger";
+    statusText = "🚨 Bahaya!";
+  } else if (h > 50) {
+    statusClass = "warn";
+    statusText = "⚠️ Waspada";
+  }
+  
+  // Update Status Kelembapan (di dalam kartu)
+  if (statusHumEl) {
+      statusHumEl.className = "status-hum " + statusClass;
+      statusHumEl.textContent = statusText;
+      statusHumEl.style.display = 'block'; // Tampilkan elemen status-hum
   }
 }
 
@@ -54,17 +59,18 @@ const getChartOptions = (title) => ({
     }
   },
   plugins: { 
-    legend: { display: false }, // Sembunyikan legenda, sudah jelas dari judul
+    legend: { display: false },
     tooltip: {
       mode: 'index',
       intersect: false
     }
   },
   animation: {
-    duration: 300 // Animasi update lebih cepat
+    duration: 300 
   }
 });
 
+// Buat Chart 1 (Suhu)
 // Buat Chart 1 (Suhu)
 const tempCtx = document.getElementById("tempChart").getContext("2d");
 const tempChart = new Chart(tempCtx, {
@@ -82,7 +88,34 @@ const tempChart = new Chart(tempCtx, {
       }
     ]
   },
-  options: getChartOptions("Suhu (°C)")
+  options: { 
+    responsive: true,
+    scales: { 
+      y: { 
+        beginAtZero: true, // DIUBAH: Sumbu Y Suhu mulai dari 0
+        title: {
+            display: true,
+            text: "Suhu (°C)"
+        }
+      },
+      x: {
+        title: {
+            display: true,
+            text: 'Waktu'
+        }
+      }
+    },
+    plugins: { 
+      legend: { display: false },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    animation: {
+      duration: 300 
+    }
+  }
 });
 
 // Buat Chart 2 (Kelembapan)
@@ -102,69 +135,36 @@ const humChart = new Chart(humCtx, {
       }
     ]
   },
-  options: getChartOptions("Kelembapan (%)")
-});
-
-// --- 4. Memuat data historis dari API ---
-/**
- * Mengambil data riwayat dari API backend untuk mengisi chart saat 
- * halaman pertama kali dimuat.
- */
-async function loadInitialData() {
-  try {
-    // Panggil API backend
-    const response = await fetch(apiUrl);
-    if (!response.ok) {
-      statusEl.textContent = "Gagal memuat history";
-      statusEl.className = "status warn";
-      console.error("Gagal mengambil data history:", response.statusText);
-      return;
+  options: {
+    responsive: true,
+    scales: { 
+      y: { 
+        min: 0,     // DIUBAH: Sumbu Y Kelembapan minimal 0
+        max: 100,   // DIUBAH: Sumbu Y Kelembapan maksimal 100
+        title: {
+            display: true,
+            text: "Kelembapan (%)"
+        }
+      },
+      x: {
+        title: {
+            display: true,
+            text: 'Waktu'
+        }
+      }
+    },
+    plugins: { 
+      legend: { display: false },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    animation: {
+      duration: 300 
     }
-    
-    const historyData = await response.json();
-    if (!historyData || historyData.length === 0) {
-      console.log("Data history masih kosong.");
-      return;
-    }
-
-    // Siapkan data untuk chart
-    const labels = [];
-    const temps = [];
-    const hums = [];
-
-    historyData.forEach(row => {
-      // Ekstrak hanya WAKTU dari timestamp (mis: "2025-10-28 12:46:07" -> "12:46:07")
-      // Kita asumsikan data di CSV sudah dalam format yang bisa diparsing
-      const time = new Date(row.timestamp).toLocaleTimeString(); 
-      labels.push(time);
-      temps.push(parseFloat(row.temperature)); // Pastikan datanya float
-      hums.push(parseFloat(row.humidity));
-    });
-
-    // Masukkan data history ke Chart
-    chart.data.labels = labels;
-    chart.data.datasets[0].data = temps;
-    chart.data.datasets[1].data = hums;
-    
-    // Perbarui metrik dan status dengan data TERAKHIR dari history
-    const latestData = historyData[historyData.length - 1];
-    if (latestData) {
-        const latestTemp = parseFloat(latestData.temperature);
-        const latestHum = parseFloat(latestData.humidity);
-        
-        tempEl.textContent = latestTemp.toFixed(1);
-        humEl.textContent = latestHum.toFixed(1);
-        setStatus(latestHum);
-    }
-
-    chart.update(); // Tampilkan data di chart
-
-  } catch (e) {
-    console.error("Error saat load initial data:", e);
-    statusEl.className = "status warn";
-    statusEl.textContent = "Gagal terhubung ke API backend";
   }
-}
+});
 
 // --- 5. Logika MQTT ---
 const client = mqtt.connect(brokerUrl, options);
@@ -176,6 +176,11 @@ client.on("connect", () => {
 
 client.on("message", (t, msg) => {
   try {
+    // Jika data MQTT masuk, sembunyikan status umum (jika belum tersembunyi)
+    if (statusEl) {
+        statusEl.style.display = 'none';
+    }
+      
     const data = JSON.parse(msg.toString());
     const now = new Date().toLocaleTimeString();
 
@@ -183,25 +188,28 @@ client.on("message", (t, msg) => {
     tempEl.textContent = data.temperature.toFixed(1);
     humEl.textContent = data.humidity.toFixed(1);
     
-    // Perbarui Status
+    // Perbarui Status (Ini akan menampilkan/memperbarui status-hum)
     setStatus(data.humidity);
 
-    // Tambahkan data ke Chart
-    chart.data.labels.push(now);
-    chart.data.datasets[0].data.push(data.temperature);
-    chart.data.datasets[1].data.push(data.humidity);
+    // Tambahkan data ke Chart Suhu
+    tempChart.data.labels.push(now);
+    tempChart.data.datasets[0].data.push(data.temperature);
+    // Tambahkan data ke Chart Kelembapan
+    humChart.data.labels.push(now);
+    humChart.data.datasets[0].data.push(data.humidity);
 
     // Batasi data chart (hanya tampilkan 30 data terakhir)
-    if (chart.data.labels.length > 30) {
-      chart.data.labels.shift();
-      chart.data.datasets[0].data.shift();
-      chart.data.datasets[1].data.shift();
+    if (tempChart.data.labels.length > 30) {
+      tempChart.data.labels.shift();
+      tempChart.data.datasets[0].data.shift();
+      humChart.data.labels.shift();
+      humChart.data.datasets[0].data.shift();
     }
-    chart.update();
+    tempChart.update();
+    humChart.update();
 
   } catch (e) {
     console.error("Gagal memproses pesan MQTT:", e);
   }
 });
 
-loadInitialData();

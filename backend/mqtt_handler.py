@@ -18,7 +18,7 @@ from telegram_notifier import send_telegram
 buzzer_state: bool = False  # Status Buzzer: False=OFF, True=ON
 last_telegram_time: float = 0.0 # Waktu terakhir notifikasi Telegram dikirim
 
-HUMIDITY_ALERT_THRESHOLD = 80 # Ambang batas kelembaban (%) untuk ALERT
+HUMIDITY_ALERT_THRESHOLD = 60 # Ambang batas kelembaban (%) untuk ALERT
 
 def on_message(client: mqtt.Client, userdata: Any, msg: mqtt.MQTTMessage) -> None:
     """Handler saat pesan MQTT diterima. Memproses, menyimpan, dan mengecek alert."""
