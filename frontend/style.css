@@ -49,8 +49,16 @@ header {
 .danger { background: #fee2e2; color: #991b1b; }
 
 /* Styling untuk Chart Canvas */
-#chart {
-  margin-top: 20px;
+.chart-container {
+  margin-top: 25px;
+}
+
+.chart-container h3 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.chart-canvas {
   background: #fff;
   border-radius: 14px;
   box-shadow: 0 3px 8px rgba(0,0,0,.1);

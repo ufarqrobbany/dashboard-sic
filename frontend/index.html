@@ -12,7 +12,7 @@
 <body>
 
 <header>
-  <h2>📸 Camera Storage Monitor</h2>
+  <h2>Lens Guard Monitoring</h2>
 </header>
 
 <div class="wrap">
@@ -28,7 +28,15 @@
     </div>
   </div>
   
-  <canvas id="chart" height="220"></canvas>
+  <div class="chart-container">
+    <h3>Grafik Suhu (3 Hari Terakhir)</h3>
+    <canvas id="tempChart" class="chart-canvas" height="220"></canvas>
+  </div>
+  
+  <div class="chart-container">
+    <h3>Grafik Kelembapan (3 Hari Terakhir)</h3>
+    <canvas id="humChart" class="chart-canvas" height="220"></canvas>
+  </div>
 </div>
 
 <script src="app.js" defer></script>

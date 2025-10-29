@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 
 import csv, os
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Dict, List, Any
 from config import CSV_FILE
 
@@ -24,16 +24,25 @@ def save_data(temp: float, hum: float) -> str:
         
     return ts
 
-def get_latest() -> Dict[str, Any]:
-    """Mengambil baris data sensor terbaru dari CSV."""
-    with open(CSV_FILE, "r") as f:
-        rows = list(csv.DictReader(f))
-        
-    return rows[-1] if rows else {}
+def get_history() -> List[Dict[str, Any]]:
+    """Mengambil riwayat data sebanyak 3 hari terakhir dari CSV."""
+    
+    # Tentukan batas waktu (3 hari yang lalu)
+    three_days_ago = datetime.now() - timedelta(days=3)
+    history_data = []
 
-def get_history(limit: int = 30) -> List[Dict[str, Any]]:
-    """Mengambil riwayat data sebanyak 'limit' baris terakhir dari CSV."""
     with open(CSV_FILE, "r") as f:
-        rows = list(csv.DictReader(f))
-        
-    return rows[-limit:]
+        reader = csv.DictReader(f)
+        for row in reader:
+            try:
+                # Konversi timestamp di CSV ke objek datetime
+                row_time = datetime.strptime(row["timestamp"], "%Y-%m-%d %H:%M:%S")
+                
+                # Hanya ambil data jika lebih baru dari 3 hari yang lalu
+                if row_time > three_days_ago:
+                    history_data.append(row)
+            except (ValueError, TypeError):
+                # Lewati baris jika format timestamp salah
+                continue
+                
+    return history_data
