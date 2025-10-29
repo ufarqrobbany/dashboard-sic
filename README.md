@@ -26,7 +26,7 @@ Sistem ini terdiri dari dua bagian utama:
 2.  **Broker MQTT (HiveMQ):** Bertindak sebagai perantara pesan.
 3.  **Backend (Python):**
       * Mendengarkan `DHT_TOPIC`.
-      * Saat data diterima, `mqtt_handler.py` memanggil `storage.py`. **Timestamp ditambahkan oleh backend (server-side)** saat data diterima, lalu disimpan ke `data.csv`. [cite: `dashboard-sic/backend/storage.py`]
+      * Saat data diterima, `mqtt_handler.py` memanggil `storage.py`. **Timestamp ditambahkan oleh backend (server-side)** saat data diterima, lalu disimpan ke `data.csv`. [cite: `lens-guard-dashboard/backend/storage.py`]
       * Jika data melebihi ambang batas, `mqtt_handler.py` memanggil `telegram_notifier.py` dan menerbitkan pesan ke `BUZZER_TOPIC`.
       * `main.py` menjalankan server API untuk melayani permintaan data.
 4.  **Frontend (Browser):**
