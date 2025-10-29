@@ -18,7 +18,6 @@ Sistem ini terdiri dari dua bagian utama:
   * **API Peringatan (Alerting):** Backend akan secara otomatis:
       * Mengirim notifikasi ke **Telegram** jika kelembaban melebihi ambang batas (`HUMIDITY_ALERT_THRESHOLD`).
       * Menerbitkan perintah ke topik **Buzzer** (`BUZZER_TOPIC`) untuk menyalakan aktuator peringatan.
-  * **API Gateway:** Menyediakan endpoint API (`/api/latest` dan `/api/history`) menggunakan FastAPI untuk mengambil data historis dari CSV.
 
 ## 3\. Arsitektur Sistem
 
