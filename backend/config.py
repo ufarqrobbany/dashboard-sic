@@ -8,8 +8,8 @@
 CSV_FILE = "data.csv" # CSV untuk menyimpan data sensor
 
 # --- Konfigurasi Telegram Bot ---
-TELEGRAM_TOKEN = "8225694717:AAFy7IzwVEbzqCzOM4WmIGMGT239FIbIc1A"
-CHAT_ID = "-4627709856"
+TELEGRAM_TOKEN = ""
+CHAT_ID = ""
 TELEGRAM_COOLDOWN_SECONDS = 300 # Cooldown mengirim notifikasi (dalam detik)
 
 # --- Konfigurasi Broker MQTT ---
